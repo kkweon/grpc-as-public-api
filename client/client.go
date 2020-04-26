@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	hello_proto "github.com/kkweon/grpc-as-public-api/server/proto"
 	"google.golang.org/grpc"
@@ -33,7 +34,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-  log.Print("Loaded X509KeyPair")
+	log.Print("Loaded X509KeyPair")
 
 	rawCACert, err := ioutil.ReadFile(*caCert)
 	if err != nil {
@@ -48,23 +49,29 @@ func main() {
 		RootCAs:      caCertPool,
 	})
 
-  log.Print("Created a new TLS")
+	log.Print("Created a new TLS")
 
 	conn, err := grpc.Dial(*serverAddr, grpc.WithTransportCredentials(creds))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-  log.Print("gRPC connected to the server")
+	log.Print("gRPC connected to the server")
 	defer conn.Close()
 
 	c := hello_proto.NewHelloClient(conn)
 
-  log.Print("Sending a HelloRequest")
-	message, err := c.Say(context.Background(), &hello_proto.HelloRequest{Name: "Kelsey"})
-	if err != nil {
-		log.Fatal(err)
+	for {
+
+		log.Print("Sending a HelloRequest")
+		message, err := c.Say(context.Background(), &hello_proto.HelloRequest{Name: "Kelsey"})
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Println(message.Message)
+
+		time.Sleep(time.Second)
 	}
 
-	log.Println(message.Message)
 }

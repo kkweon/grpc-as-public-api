@@ -26,4 +26,4 @@ gen-cert: clean-cert
 
 .PHONY: clean-cert
 clean-cert:
-	rm -rf cert
+	rm -rf cert ca.* client.* server.*

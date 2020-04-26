@@ -1,0 +1,10 @@
+secretGenerator:
+  - name: hello-tls
+    files:
+      - ./cert/ca.crt
+      - ./cert/server.key
+      - ./cert/server.crt
+
+resources:
+  - ./release/server-deployment.yaml
+  - ./release/server-service.yaml
