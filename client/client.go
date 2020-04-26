@@ -1,16 +1,18 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"flag"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	hello_proto "github.com/kkweon/grpc-as-public-api/server/proto"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+
+	hello_proto "github.com/kkweon/grpc-as-public-api/server/proto"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 func withConfigDir(path string) string {
