@@ -5,14 +5,16 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"flag"
-	hello_proto "github.com/kkweon/grpc-as-public-api/server/proto"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
 	"os"
 	"path/filepath"
+
+	hello_proto "github.com/kkweon/grpc-as-public-api/server/proto"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 func withConfigDir(path string) string {
@@ -23,8 +25,11 @@ type helloWorldServer struct {
 }
 
 func (h *helloWorldServer) Say(ctx context.Context, helloRequest *hello_proto.HelloRequest) (*hello_proto.HelloResponse, error) {
+
+	log.Print(fmt.Sprintf("Received a HelloRequest %v", helloRequest))
+
 	return &hello_proto.HelloResponse{
-		Message:              "Hello " + helloRequest.GetName(),
+		Message: "Hello " + helloRequest.GetName(),
 	}, nil
 }
 
@@ -32,10 +37,10 @@ const tcp = "tcp"
 
 func main() {
 	var (
-		caCert          = flag.String("ca-cert", withConfigDir("ca.pem"), "Trusted CA certificate.")
-		listenAddr      = flag.String("listen-addr", "0.0.0.0:7900", "HTTP listen address.")
-		tlsCert         = flag.String("tls-cert", withConfigDir("cert.pem"), "TLS server certificate.")
-		tlsKey          = flag.String("tls-key", withConfigDir("key.pem"), "TLS server key.")
+		caCert     = flag.String("ca-cert", withConfigDir("ca.pem"), "Trusted CA certificate.")
+		listenAddr = flag.String("listen-addr", "0.0.0.0:7900", "HTTP listen address.")
+		tlsCert    = flag.String("tls-cert", withConfigDir("cert.pem"), "TLS server certificate.")
+		tlsKey     = flag.String("tls-key", withConfigDir("key.pem"), "TLS server key.")
 	)
 	flag.Parse()
 
