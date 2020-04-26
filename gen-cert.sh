@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir cert && cd cert
 
 # Generate a CA key
 openssl genrsa -out ca.key 2048

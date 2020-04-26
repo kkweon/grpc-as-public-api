@@ -52,7 +52,7 @@ func main() {
 	defer conn.Close()
 
 	c := hello_proto.NewHelloClient(conn)
-	message, err := c.Say(context.Background(), &hello_proto.HelloRequest{"Kelsey"})
+	message, err := c.Say(context.Background(), &hello_proto.HelloRequest{Name: "Kelsey"})
 	if err != nil {
 		log.Fatal(err)
 	}

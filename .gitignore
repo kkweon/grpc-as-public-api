@@ -5,3 +5,4 @@ server/server
 *.key
 *.srl
 *.csr
+client/client
