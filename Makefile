@@ -19,6 +19,9 @@ client-build:
 client-run: client-build
 	./client/client -ca-cert cert/ca.crt -tls-cert cert/client.crt -tls-key cert/client.key
 
+.PHONY: client-run-mkube
+client-run-mkube: client-build
+	./client/client -server-addr=mkube:30000 -tls-cert cert/client.crt -tls-key cert/client.key -ca-cert cert/ca.crt
 
 .PHONY: gen-cert
 gen-cert: clean-cert
