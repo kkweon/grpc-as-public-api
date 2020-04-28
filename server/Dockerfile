@@ -1,4 +1,4 @@
-FROM golang:1.14
+FROM golang:1.14 as builder
 
 RUN GRPC_HEALTH_PROBE_VERSION=v0.3.2 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
@@ -7,6 +7,15 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.3.2 && \
 WORKDIR /app
 
 COPY . /app
-RUN go build
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server .
 
-ENTRYPOINT ./server
+
+#########################
+
+FROM alpine:latest
+# Copy our static executable.
+COPY --from=builder /app/server /app/server
+COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
+
+# Run the hello binary.
+ENTRYPOINT ["/app/server"]

@@ -1,21 +1,20 @@
 package main
 
 import (
-	"crypto/tls"
-	"crypto/x509"
 	"flag"
 	"fmt"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/health"
-	"io/ioutil"
-	"log"
 	"net"
 	"os"
 	"path/filepath"
+
+	log "github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+
 	"context"
-	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+
 	hello_proto "github.com/kkweon/grpc-as-public-api/server/proto"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 func withConfigDir(path string) string {
@@ -45,27 +44,16 @@ func main() {
 	)
 	flag.Parse()
 
+	log.WithFields(log.Fields{
+		"caCert":     *caCert,
+		"listenAddr": *listenAddr,
+		"tlsCert":    *tlsCert,
+		"tlsKey":     *tlsKey,
+	}).Info("flag has been parsed()")
+
 	log.Println("Hello service starting...")
 
-	cert, err := tls.LoadX509KeyPair(*tlsCert, *tlsKey)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	rawCaCert, err := ioutil.ReadFile(*caCert)
-	if err != nil {
-		log.Fatal(err)
-	}
-	caCertPool := x509.NewCertPool()
-	caCertPool.AppendCertsFromPEM(rawCaCert)
-
-	creds := credentials.NewTLS(&tls.Config{
-		Certificates: []tls.Certificate{cert},
-		ClientCAs:    caCertPool,
-		ClientAuth:   tls.RequireAndVerifyClientCert,
-	})
-
-	server := grpc.NewServer(grpc.Creds(creds))
+	server := grpc.NewServer()
 	hello_proto.RegisterHelloServer(server, &helloWorldServer{})
 
 	healthServer := health.NewServer()

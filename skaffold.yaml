@@ -4,7 +4,7 @@ metadata:
   name: grpc-as-public-api
 build:
   artifacts:
-    - image: hello-server
+    - image: kkweon/hello-server
       context: server
 deploy:
   kustomize:

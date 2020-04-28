@@ -8,8 +8,7 @@ spec:
   ports:
     - name: https
       port: 7900
-      protocol: TCP
-      targetPort: https
+
   selector:
     app: hello-server
   type: ClusterIP
