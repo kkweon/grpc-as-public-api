@@ -9,6 +9,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 
 	"context"
@@ -53,7 +54,9 @@ func main() {
 
 	log.Println("Hello service starting...")
 
-	server := grpc.NewServer()
+  creds, _ := credentials.NewServerTLSFromFile(*tlsCert, *tlsKey)
+
+	server := grpc.NewServer(grpc.Creds(creds))
 	hello_proto.RegisterHelloServer(server, &helloWorldServer{})
 
 	healthServer := health.NewServer()
@@ -67,7 +70,24 @@ func main() {
 
 	log.Printf("Server will listen to %v", *listenAddr)
 
-	if err := server.Serve(listener); err != nil {
-		log.Fatal(err)
-	}
+  if err := server.Serve(listener); err != nil {
+    log.Fatal(err)
+  }
+
+	//h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//fmt.Fprint(w, "ok")
+	//})
+
+	//handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//ct := r.Header.Get("Content-Type")
+		//if r.ProtoMajor == 2 && strings.Contains(ct, "application/grpc") {
+			//server.ServeHTTP(w, r)
+		//} else {
+			//h.ServeHTTP(w, r)
+		//}
+	//})
+
+	//if err := http.Serve(listener, handler); err != nil {
+		//log.Fatal(err)
+	//}
 }

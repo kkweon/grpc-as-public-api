@@ -3,15 +3,14 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"crypto/x509"
 	"flag"
-	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"time"
 
 	hello_proto "github.com/kkweon/grpc-as-public-api/server/proto"
+	log "github.com/sirupsen/logrus"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -29,26 +28,29 @@ func main() {
 	)
 	flag.Parse()
 
-	cert, err := tls.LoadX509KeyPair(*tlsCert, *tlsKey)
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.WithFields(log.Fields{
+		"caCert":    *caCert,
+		"serverAdd": *serverAddr,
+		"tlsCert":   *tlsCert,
+		"tlsKey":    *tlsKey,
+	}).Info("flag.Parse() called")
 
-	log.Print("Loaded X509KeyPair")
+	//cert, err := tls.LoadX509KeyPair(*tlsCert, *tlsKey)
+	//if err != nil {
+	//log.Fatal(err)
+	//}
 
-	rawCACert, err := ioutil.ReadFile(*caCert)
-	if err != nil {
-		log.Fatal(err)
-	}
+	//log.Print("Loaded X509KeyPair")
 
-	caCertPool := x509.NewCertPool()
-	caCertPool.AppendCertsFromPEM(rawCACert)
+	//rawCACert, err := ioutil.ReadFile(*caCert)
+	//if err != nil {
+	//log.Fatal(err)
+	//}
 
-	creds := credentials.NewTLS(&tls.Config{
-		Certificates: []tls.Certificate{cert},
-		RootCAs:      caCertPool,
-	})
+	//caCertPool := x509.NewCertPool()
+	//caCertPool.AppendCertsFromPEM(rawCACert)
 
+	creds := credentials.NewTLS(&tls.Config{})
 	log.Print("Created a new TLS")
 
 	conn, err := grpc.Dial(*serverAddr, grpc.WithTransportCredentials(creds))

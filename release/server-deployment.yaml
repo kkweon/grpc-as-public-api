@@ -29,20 +29,31 @@ spec:
 
           args:
             - "-listen-addr=0.0.0.0:7900"
+            - "-tls-cert=/etc/server/tls.crt"
+            - "-tls-key=/etc/server/tls.key"
 
           readinessProbe:
             initialDelaySeconds: 5
             exec:
               command:
                 - "/bin/grpc_health_probe"
-                - "-addr=localhost:7900"
+                - "-addr=0.0.0.0:7900"
+                - "-tls"
+                - "-tls-server-name=k8s.kkweon.dev"
+                #- "-tls-client-cert=/etc/server/tls.crt"
+                #- "-tls-client-key=/etc/server/tls.key"
 
           livenessProbe:
             initialDelaySeconds: 10
             exec:
               command:
                 - "/bin/grpc_health_probe"
-                - "-addr=localhost:7900"
+                - "-addr=0.0.0.0:7900"
+                - "-tls"
+                - "-tls-server-name=k8s.kkweon.dev"
+                #- "-tls-client-cert=/etc/server/tls.crt"
+                #- "-tls-client-key=/etc/server/tls.key"
+
           volumeMounts:
             - name: hello-tls
               readOnly: true
@@ -51,4 +62,4 @@ spec:
       volumes:
         - name: "hello-tls"
           secret:
-            secretName: "hello-tls"
+            secretName: "kkweon-tls"
