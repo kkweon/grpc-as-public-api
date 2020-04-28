@@ -10,7 +10,6 @@ spec:
       port: 7900
       protocol: TCP
       targetPort: https
-      nodePort: 30000
   selector:
     app: hello-server
-  type: NodePort
+  type: ClusterIP
