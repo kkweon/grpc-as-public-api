@@ -19,18 +19,37 @@ spec:
         sidecar.istio.io/inject: "false"
     spec:
       containers:
+        - image: envoyproxy/envoy:v1.14.1
+          name: envoy
+          command:
+            - /usr/local/bin/envoy
+          args:
+            - "-c /etc/envoy/envoy.yaml"
+            - "-l trace"
+          volumeMounts:
+            - name: envoy-yaml
+              readOnly: true
+              mountPath: /etc/envoy/envoy.yaml
+              subPath: envoy.yaml
+
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: http-admin
+              containerPort: 9901
+
         - image: kkweon/hello-server
           name: hello-server
           ports:
-            - name: http
+            - name: grpc
               containerPort: 7900
           command:
             - "/app/server"
 
           args:
             - "-listen-addr=0.0.0.0:7900"
-            - "-tls-cert=/etc/server/tls.crt"
-            - "-tls-key=/etc/server/tls.key"
+            #- "-tls-cert=/etc/server/tls.crt"
+            #- "-tls-key=/etc/server/tls.key"
 
           readinessProbe:
             initialDelaySeconds: 5
@@ -54,12 +73,15 @@ spec:
                 #- "-tls-client-cert=/etc/server/tls.crt"
                 #- "-tls-client-key=/etc/server/tls.key"
 
-          volumeMounts:
-            - name: hello-tls
-              readOnly: true
-              mountPath: /etc/server
+          #volumeMounts:
+          #- name: hello-tls
+          #readOnly: true
+          #mountPath: /etc/server
 
       volumes:
-        - name: "hello-tls"
-          secret:
-            secretName: "kkweon-tls"
+        #- name: "hello-tls"
+        #secret:
+        #secretName: "kkweon-tls"
+        - name: envoy-yaml
+          configMap:
+            name: envoy-yaml

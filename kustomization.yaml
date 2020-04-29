@@ -14,5 +14,3 @@ resources:
   - ./release/ingress.yaml
   - ./release/server-deployment.yaml
   - ./release/server-service.yaml
-  - ./release/envoy-deployment.yaml
-  - ./release/envoy-service.yaml

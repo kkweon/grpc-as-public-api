@@ -6,8 +6,10 @@ metadata:
   name: hello-server
 spec:
   ports:
-    - name: https
+    - name: grpc
       port: 7900
+    - name: http
+      port: 8080
 
   selector:
     app: hello-server
