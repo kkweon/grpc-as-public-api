@@ -5,7 +5,14 @@ secretGenerator:
       - ./cert/server.key
       - ./cert/server.crt
 
+configMapGenerator:
+  - name: envoy-yaml
+    files:
+      - ./release/envoy.yaml
+
 resources:
   - ./release/ingress.yaml
   - ./release/server-deployment.yaml
   - ./release/server-service.yaml
+  - ./release/envoy-deployment.yaml
+  - ./release/envoy-service.yaml

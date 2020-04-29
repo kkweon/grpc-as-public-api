@@ -22,7 +22,7 @@ spec:
         - image: kkweon/hello-server
           name: hello-server
           ports:
-            - name: https
+            - name: http
               containerPort: 7900
           command:
             - "/app/server"
@@ -38,8 +38,8 @@ spec:
               command:
                 - "/bin/grpc_health_probe"
                 - "-addr=0.0.0.0:7900"
-                - "-tls"
-                - "-tls-server-name=k8s.kkweon.dev"
+                #- "-tls"
+                #- "-tls-server-name=k8s.kkweon.dev"
                 #- "-tls-client-cert=/etc/server/tls.crt"
                 #- "-tls-client-key=/etc/server/tls.key"
 
@@ -49,8 +49,8 @@ spec:
               command:
                 - "/bin/grpc_health_probe"
                 - "-addr=0.0.0.0:7900"
-                - "-tls"
-                - "-tls-server-name=k8s.kkweon.dev"
+                #- "-tls"
+                #- "-tls-server-name=k8s.kkweon.dev"
                 #- "-tls-client-cert=/etc/server/tls.crt"
                 #- "-tls-client-key=/etc/server/tls.key"
 

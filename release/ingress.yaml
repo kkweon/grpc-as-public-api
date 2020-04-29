@@ -4,9 +4,12 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPCS"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    #nginx.ingress.kubernetes.io/backend-protocol: "GRPCS"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
+    #nginx.ingress.kubernetes.io/enable-cors: "true"
+    #nginx.ingress.kubernetes.io/cors-allow-headers: x-user-agent, x-grpc-web,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization
 
   name: ingress-server-grpc
 spec:
@@ -14,9 +17,10 @@ spec:
     - host: k8s.kkweon.dev
       http:
         paths:
-          - backend:
-              serviceName: hello-server
-              servicePort: https
+          - path: /envoy/?(.*)
+            backend:
+              serviceName: envoy
+              servicePort: http
   tls:
     - hosts:
         - k8s.kkweon.dev

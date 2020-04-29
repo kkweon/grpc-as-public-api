@@ -9,7 +9,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 
 	"context"
@@ -54,9 +53,9 @@ func main() {
 
 	log.Println("Hello service starting...")
 
-  creds, _ := credentials.NewServerTLSFromFile(*tlsCert, *tlsKey)
-
-	server := grpc.NewServer(grpc.Creds(creds))
+  // creds, _ := credentials.NewServerTLSFromFile(*tlsCert, *tlsKey)
+	// server := grpc.NewServer(grpc.Creds(creds))
+	server := grpc.NewServer()
 	hello_proto.RegisterHelloServer(server, &helloWorldServer{})
 
 	healthServer := health.NewServer()
